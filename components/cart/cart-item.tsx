@@ -19,7 +19,7 @@ export function CartItem({ item }: CartItemProps) {
     return (
         <div className="flex gap-3 py-3 border-b border-border last:border-b-0">
             {/* Product Image */}
-            <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
+            <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-muted">
                 <Image
                     src={product.image}
                     alt={product.name}
