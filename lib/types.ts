@@ -9,6 +9,9 @@ export interface Product {
     unit: string;
     inStock: boolean;
     badge?: string;
+    rating?: number;
+    reviews?: number;
+    tags?: string[];
 }
 
 export interface CartItem {

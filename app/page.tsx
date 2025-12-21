@@ -11,7 +11,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
 
   const filteredCategories = getCategoriesByTab(selectedTab);
-  
+
   const displayedProducts = selectedCategory
     ? getProductsByCategory(selectedCategory)
     : getProductsByTab(selectedTab);
@@ -35,11 +35,10 @@ export default function HomePage() {
               <button
                 key={tab}
                 onClick={() => handleTabChange(tab)}
-                className={`text-sm font-medium whitespace-nowrap transition-colors ${
-                  selectedTab === tab
+                className={`text-sm font-medium whitespace-nowrap transition-colors ${selectedTab === tab
                     ? "text-primary border-b-2 border-primary pb-1"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {tab}
               </button>

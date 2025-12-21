@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { SearchBar } from "@/components/layout/search-bar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
     ShoppingCart01Icon,
-    Search01Icon,
     Location01Icon,
     UserIcon,
     ArrowDown01Icon,
@@ -44,19 +43,7 @@ export function Header() {
                         </button>
 
                         {/* Search Bar */}
-                        <div className="flex-1 max-w-2xl mx-4">
-                            <div className="relative">
-                                <HugeiconsIcon
-                                    icon={Search01Icon}
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
-                                />
-                                <Input
-                                    type="search"
-                                    placeholder='Search for "milk"'
-                                    className="pl-10 h-10 bg-muted/50 border-transparent focus:border-primary"
-                                />
-                            </div>
-                        </div>
+                        <SearchBar />
 
                         {/* Login Button */}
                         <Button variant="ghost" className="hidden md:flex gap-2">
