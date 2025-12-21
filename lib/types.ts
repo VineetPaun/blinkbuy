@@ -21,4 +21,5 @@ export interface Category {
     name: string;
     icon: string;
     image?: string;
+    tab?: string;
 }

@@ -1,14 +1,15 @@
 "use client";
 
-import { categories } from "@/data/products";
+import { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface CategoryNavProps {
     selectedCategory?: string;
     onSelectCategory?: (categoryId: string | undefined) => void;
+    categories: Category[];
 }
 
-export function CategoryNav({ selectedCategory, onSelectCategory }: CategoryNavProps) {
+export function CategoryNav({ selectedCategory, onSelectCategory, categories }: CategoryNavProps) {
     return (
         <div className="relative">
             <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
