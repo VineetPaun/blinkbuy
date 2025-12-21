@@ -6,7 +6,6 @@ import { useCart } from "@/lib/cart-context";
 import {
     searchProducts,
     findProductsByNames,
-    getRecipeIngredients,
     formatCartContents,
 } from "@/lib/ai-tools";
 
@@ -83,12 +82,23 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
 
             case "add_to_cart": {
                 const productNames = args.product_names as string[];
-                const found = findProductsByNames(productNames);
-                if (found.length > 0) {
-                    found.forEach(p => addToCart(p));
+                const quantities = args.quantities as number[] | undefined;
+                const added: Product[] = [];
+
+                productNames.forEach((name, index) => {
+                    const found = findProductsByNames([name]);
+                    if (found.length > 0) {
+                        const product = found[0];
+                        const quantity = quantities && quantities[index] ? quantities[index] : 1;
+                        addToCart(product, quantity);
+                        added.push(product);
+                    }
+                });
+
+                if (added.length > 0) {
                     return {
-                        result: `Added ${found.length} item(s) to cart: ${found.map(p => p.name).join(", ")}`,
-                        addedProducts: found
+                        result: `Added ${added.length} item(s) to cart: ${added.map(p => p.name).join(", ")}`,
+                        addedProducts: added
                     };
                 }
                 return { result: "Could not find those products to add." };
@@ -128,21 +138,7 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
                 return { result: "The cart is already empty." };
             }
 
-            case "get_recipe_ingredients": {
-                const recipeName = args.recipe_name as string;
-                const recipeResult = getRecipeIngredients(recipeName);
 
-                if (recipeResult.found && recipeResult.recipe) {
-                    return {
-                        result: `Recipe: ${recipeResult.recipe.name}\nDescription: ${recipeResult.recipe.description}\nIngredients needed: ${recipeResult.recipe.ingredients.join(", ")}\nFound ${recipeResult.products.length} matching products in store.`,
-                        products: recipeResult.products,
-                        isRecipeSuggestion: true
-                    };
-                }
-                return {
-                    result: `Recipe "${recipeName}" not found. Available recipes: pasta, biryani, omelette, salad, sandwich, smoothie, pancakes, dal, curry, fried rice, pizza, soup, tea, coffee, cake, noodles`
-                };
-            }
 
             case "suggest_products_for_cart": {
                 const productNames = args.product_names as string[];

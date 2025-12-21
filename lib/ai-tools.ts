@@ -99,25 +99,7 @@ export const aiTools = [
             },
         },
     },
-    {
-        type: "function" as const,
-        function: {
-            name: "get_recipe_ingredients",
-            description:
-                "Get a list of ingredients needed for a recipe and find matching products in the store. Use this when the user mentions cooking, making, or preparing a dish.",
-            parameters: {
-                type: "object",
-                properties: {
-                    recipe_name: {
-                        type: "string",
-                        description:
-                            "The name of the recipe or dish (e.g., 'pasta', 'biryani', 'pancakes')",
-                    },
-                },
-                required: ["recipe_name"],
-            },
-        },
-    },
+
     {
         type: "function" as const,
         function: {
@@ -144,179 +126,6 @@ export const aiTools = [
         },
     },
 ];
-
-// Recipe database
-const recipes: Record<
-    string,
-    { name: string; ingredients: string[]; description: string }
-> = {
-    pasta: {
-        name: "Classic Pasta",
-        ingredients: [
-            "pasta",
-            "tomato",
-            "onion",
-            "garlic",
-            "olive oil",
-            "cheese",
-            "basil",
-        ],
-        description: "A delicious Italian pasta with tomato sauce",
-    },
-    biryani: {
-        name: "Chicken Biryani",
-        ingredients: [
-            "rice",
-            "chicken",
-            "onion",
-            "tomato",
-            "yogurt",
-            "ginger",
-            "garlic",
-            "ghee",
-        ],
-        description: "Aromatic Indian rice dish with spices and chicken",
-    },
-    omelette: {
-        name: "Cheese Omelette",
-        ingredients: ["eggs", "cheese", "onion", "butter", "pepper"],
-        description: "Fluffy omelette with melted cheese",
-    },
-    salad: {
-        name: "Fresh Garden Salad",
-        ingredients: [
-            "lettuce",
-            "tomato",
-            "cucumber",
-            "onion",
-            "carrot",
-            "lemon",
-            "olive oil",
-        ],
-        description: "Healthy fresh vegetable salad",
-    },
-    sandwich: {
-        name: "Club Sandwich",
-        ingredients: [
-            "bread",
-            "cheese",
-            "tomato",
-            "lettuce",
-            "butter",
-            "mayonnaise",
-        ],
-        description: "Classic layered sandwich",
-    },
-    smoothie: {
-        name: "Fruit Smoothie",
-        ingredients: ["banana", "milk", "yogurt", "honey", "strawberry"],
-        description: "Refreshing blended fruit drink",
-    },
-    pancakes: {
-        name: "Fluffy Pancakes",
-        ingredients: ["flour", "milk", "eggs", "butter", "sugar", "honey"],
-        description: "Soft and fluffy breakfast pancakes",
-    },
-    dal: {
-        name: "Dal Tadka",
-        ingredients: [
-            "dal",
-            "lentils",
-            "onion",
-            "tomato",
-            "garlic",
-            "cumin",
-            "ghee",
-        ],
-        description: "Indian spiced lentil curry",
-    },
-    curry: {
-        name: "Vegetable Curry",
-        ingredients: [
-            "potato",
-            "onion",
-            "tomato",
-            "garlic",
-            "ginger",
-            "coconut milk",
-        ],
-        description: "Rich and creamy vegetable curry",
-    },
-    "fried rice": {
-        name: "Vegetable Fried Rice",
-        ingredients: [
-            "rice",
-            "eggs",
-            "onion",
-            "carrot",
-            "peas",
-            "soy sauce",
-            "garlic",
-        ],
-        description: "Quick and tasty fried rice",
-    },
-    pizza: {
-        name: "Homemade Pizza",
-        ingredients: [
-            "flour",
-            "cheese",
-            "tomato",
-            "onion",
-            "capsicum",
-            "olive oil",
-            "oregano",
-        ],
-        description: "Delicious homemade pizza with toppings",
-    },
-    soup: {
-        name: "Vegetable Soup",
-        ingredients: [
-            "tomato",
-            "carrot",
-            "onion",
-            "potato",
-            "garlic",
-            "butter",
-            "cream",
-        ],
-        description: "Warm and hearty vegetable soup",
-    },
-    tea: {
-        name: "Masala Chai",
-        ingredients: ["tea", "milk", "sugar", "ginger", "cardamom"],
-        description: "Traditional Indian spiced tea",
-    },
-    coffee: {
-        name: "Coffee",
-        ingredients: ["coffee", "milk", "sugar"],
-        description: "Hot brewed coffee",
-    },
-    cake: {
-        name: "Chocolate Cake",
-        ingredients: [
-            "flour",
-            "eggs",
-            "sugar",
-            "butter",
-            "chocolate",
-            "milk",
-            "cocoa",
-        ],
-        description: "Rich and moist chocolate cake",
-    },
-    noodles: {
-        name: "Stir Fried Noodles",
-        ingredients: [
-            "noodles",
-            "vegetables",
-            "onion",
-            "garlic",
-            "soy sauce",
-            "oil",
-        ],
-        description: "Quick Asian-style stir fried noodles",
-    },
-};
 
 // Tool execution functions
 export function searchProducts(query: string, limit: number = 6): Product[] {
@@ -376,39 +185,6 @@ export function findProductsByNames(names: string[]): Product[] {
     return found;
 }
 
-export function getRecipeIngredients(recipeName: string): {
-    found: boolean;
-    recipe?: { name: string; description: string; ingredients: string[] };
-    products: Product[];
-} {
-    const lowerName = recipeName.toLowerCase().trim();
-
-    // Find matching recipe
-    let matchedRecipe:
-        | { name: string; description: string; ingredients: string[] }
-        | undefined;
-
-    for (const [key, recipe] of Object.entries(recipes)) {
-        if (lowerName.includes(key) || key.includes(lowerName)) {
-            matchedRecipe = recipe;
-            break;
-        }
-    }
-
-    if (!matchedRecipe) {
-        return { found: false, products: [] };
-    }
-
-    // Find matching products for ingredients
-    const matchedProducts = findProductsByNames(matchedRecipe.ingredients);
-
-    return {
-        found: true,
-        recipe: matchedRecipe,
-        products: matchedProducts,
-    };
-}
-
 export function formatCartContents(items: CartItem[]): string {
     if (items.length === 0) {
         return "Your cart is empty.";
@@ -439,9 +215,4 @@ export function formatProductList(productList: Product[]): string {
     return productList
         .map((p) => `• ${p.name} - ₹${p.price}/${p.unit}`)
         .join("\n");
-}
-
-// Available recipes for help text
-export function getAvailableRecipes(): string[] {
-    return Object.values(recipes).map((r) => r.name);
 }
