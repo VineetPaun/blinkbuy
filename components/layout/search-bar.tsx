@@ -294,6 +294,7 @@ function ProductSuggestion({ product, query }: { product: Product; query: string
                     fill
                     className="object-cover"
                     sizes="40px"
+                    unoptimized={product.image.includes("placehold.co")}
                 />
             </div>
             <div className="flex-1 min-w-0">

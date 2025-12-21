@@ -47,7 +47,7 @@ export function Header() {
                         {/* Cart Button */}
                         <Button
                             variant="default"
-                            className="relative gap-2 min-w-25 bg-[#c026d3] hover:bg-[#a21caf] text-white"
+                            className="relative gap-2 w-32 bg-[#c026d3] hover:bg-[#a21caf] text-white"
                             onClick={() => setIsCartOpen(true)}
                         >
                             <HugeiconsIcon icon={ShoppingCart01Icon} className="size-5" />

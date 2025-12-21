@@ -26,6 +26,7 @@ export function CartItem({ item }: CartItemProps) {
                     fill
                     className="object-cover"
                     sizes="64px"
+                    unoptimized={product.image.includes("placehold.co")}
                 />
             </div>
 

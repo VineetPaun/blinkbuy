@@ -21,7 +21,14 @@ function ProductCard({ product, onAdd, isAdded }: { product: Product; onAdd: () 
     return (
         <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
             <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
-                <Image src={product.image} alt={product.name} fill className="object-cover" sizes="40px" />
+                <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                    sizes="40px"
+                    unoptimized={product.image.includes("placehold.co")}
+                />
             </div>
             <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium truncate">{product.name}</p>
@@ -31,8 +38,8 @@ function ProductCard({ product, onAdd, isAdded }: { product: Product; onAdd: () 
                 onClick={onAdd}
                 disabled={isAdded}
                 className={`size-7 rounded-full flex items-center justify-center shrink-0 transition-colors ${isAdded
-                        ? "bg-green-500 text-white"
-                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    ? "bg-green-500 text-white"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
                     }`}
             >
                 <HugeiconsIcon icon={isAdded ? CheckmarkCircle02Icon : Add01Icon} className="size-4" />
@@ -59,8 +66,8 @@ function MessageBubble({
             <div className={`max-w-[85%]`}>
                 <div
                     className={`px-3 py-2 rounded-2xl ${isUser
-                            ? "bg-primary text-primary-foreground rounded-br-sm"
-                            : "bg-muted rounded-bl-sm"
+                        ? "bg-primary text-primary-foreground rounded-br-sm"
+                        : "bg-muted rounded-bl-sm"
                         }`}
                 >
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -183,8 +190,8 @@ export function AIChat() {
             <button
                 onClick={toggleChat}
                 className={`fixed bottom-6 right-6 z-50 size-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${isOpen
-                        ? "bg-muted text-muted-foreground rotate-0"
-                        : "bg-primary text-primary-foreground hover:scale-110"
+                    ? "bg-muted text-muted-foreground rotate-0"
+                    : "bg-primary text-primary-foreground hover:scale-110"
                     }`}
                 aria-label={isOpen ? "Close AI Chat" : "Open AI Chat"}
             >

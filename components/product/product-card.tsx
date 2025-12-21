@@ -27,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
         : null;
 
     return (
-        <div className="group relative bg-white dark:bg-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
+        <div className="group relative flex flex-col h-full bg-white dark:bg-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
             {/* Image Container */}
             <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/20 dark:to-gray-800/20 overflow-hidden">
                 <Image
@@ -36,6 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     fill
                     className="object-contain group-hover:scale-105 transition-transform duration-300"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    unoptimized={product.image.includes("placehold.co")}
                 />
 
                 {/* ADD button - right side of image */}
@@ -59,7 +60,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {/* Content */}
-            <div className="p-3 pt-3">
+            <div className="flex flex-col flex-1 p-3 pt-3">
                 {/* Price Section */}
                 <div className="flex items-baseline gap-2">
                     <span className="font-bold text-lg text-green-600">₹{product.price}</span>
@@ -93,7 +94,7 @@ export function ProductCard({ product }: ProductCardProps) {
                         {product.tags.slice(0, 1).map((tag, index) => (
                             <span
                                 key={index}
-                                className="text-[11px] font-medium text-gray-600 dark:text-gray-400 bg-transparent px-2.5 py-0.5 rounded-full"
+                                className="text-[11px] font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-0.5 rounded-full"
                             >
                                 {tag}
                             </span>
@@ -101,24 +102,27 @@ export function ProductCard({ product }: ProductCardProps) {
                     </div>
                 )}
 
-                {/* Rating */}
-                {product.rating && (
-                    <div className="flex items-center gap-1 mt-2">
-                        <HugeiconsIcon
-                            icon={StarIcon}
-                            className="size-3.5 text-amber-400"
-                            style={{ fill: '#fbbf24' }}
-                        />
-                        <span className="text-xs font-medium text-gray-700 dark:text-foreground">
-                            {product.rating}
-                        </span>
-                        {product.reviews && (
-                            <span className="text-xs text-gray-500 dark:text-muted-foreground">
-                                {formatReviews(product.reviews)}
+                {/* Spacer to push rating down */}
+                <div className="mt-auto pt-2">
+                    {/* Rating */}
+                    {product.rating && (
+                        <div className="flex items-center gap-1">
+                            <HugeiconsIcon
+                                icon={StarIcon}
+                                className="size-3.5 text-amber-400"
+                                style={{ fill: '#fbbf24' }}
+                            />
+                            <span className="text-xs font-medium text-gray-700 dark:text-foreground">
+                                {product.rating}
                             </span>
-                        )}
-                    </div>
-                )}
+                            {product.reviews && (
+                                <span className="text-xs text-gray-500 dark:text-muted-foreground">
+                                    {formatReviews(product.reviews)}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
