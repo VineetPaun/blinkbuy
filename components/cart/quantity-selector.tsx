@@ -21,19 +21,19 @@ export function QuantitySelector({
 
     return (
         <div
-            className={`inline-flex items-center gap-0 rounded-lg bg-primary ${isSmall ? "h-7" : "h-9"
+            className={`inline-flex items-center gap-0 rounded-lg bg-[#c026d3] ${isSmall ? "h-7" : "h-9"
                 }`}
         >
             <Button
                 variant="ghost"
                 size={isSmall ? "icon-xs" : "icon-sm"}
                 onClick={onDecrease}
-                className="text-primary-foreground hover:bg-primary/80 rounded-l-lg rounded-r-none"
+                className="text-white hover:bg-[#a21caf] rounded-l-lg rounded-r-none"
             >
                 <HugeiconsIcon icon={MinusSignIcon} className="size-4" />
             </Button>
             <span
-                className={`min-w-[28px] text-center font-semibold text-primary-foreground ${isSmall ? "text-sm" : "text-base"
+                className={`min-w-[28px] text-center font-semibold text-white ${isSmall ? "text-sm" : "text-base"
                     }`}
             >
                 {quantity}
@@ -42,7 +42,7 @@ export function QuantitySelector({
                 variant="ghost"
                 size={isSmall ? "icon-xs" : "icon-sm"}
                 onClick={onIncrease}
-                className="text-primary-foreground hover:bg-primary/80 rounded-r-lg rounded-l-none"
+                className="text-white hover:bg-[#a21caf] rounded-r-lg rounded-l-none"
             >
                 <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
             </Button>

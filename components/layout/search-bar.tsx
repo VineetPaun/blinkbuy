@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { products, categories } from "@/data/products";
 import { Product, Category } from "@/lib/types";
-import { Search01Icon, Clock04Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { useSearch } from "@/lib/search-context";
+import { Search01Icon, Clock04Icon, ArrowRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
 interface SearchResult {
@@ -70,6 +71,7 @@ function searchCategories(query: string): Category[] {
 }
 
 export function SearchBar() {
+    const { performSearch, selectCategory, clearSearch, isSearching, searchQuery } = useSearch();
     const [query, setQuery] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const [results, setResults] = useState<SearchResult[]>([]);
@@ -77,6 +79,13 @@ export function SearchBar() {
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    // Sync query with global search state
+    useEffect(() => {
+        if (!isSearching) {
+            setQuery("");
+        }
+    }, [isSearching]);
 
     // Load recent searches on mount
     useEffect(() => {
@@ -160,13 +169,16 @@ export function SearchBar() {
             const product = result.item as Product;
             setQuery(product.name);
             saveRecentSearch(product.name);
+            performSearch(product.name);
         } else if (result.type === "category") {
             const category = result.item as Category;
             setQuery(category.name);
             saveRecentSearch(category.name);
+            selectCategory(category);
         } else if (result.type === "recent") {
             const searchTerm = result.item as string;
             setQuery(searchTerm);
+            performSearch(searchTerm);
         }
         setIsFocused(false);
         setRecentSearches(getRecentSearches());
@@ -176,8 +188,15 @@ export function SearchBar() {
         if (searchQuery.trim()) {
             saveRecentSearch(searchQuery);
             setRecentSearches(getRecentSearches());
+            performSearch(searchQuery);
         }
         setIsFocused(false);
+    };
+
+    const handleClearSearch = () => {
+        setQuery("");
+        clearSearch();
+        inputRef.current?.focus();
     };
 
     const showDropdown = isFocused && results.length > 0;
@@ -197,9 +216,18 @@ export function SearchBar() {
                     onFocus={() => setIsFocused(true)}
                     onKeyDown={handleKeyDown}
                     placeholder='Search for "milk"'
-                    className="pl-10 h-10 bg-muted/50 border-transparent focus:border-primary"
+                    className="pl-10 pr-10 h-10 bg-muted/50 border-transparent focus:border-primary"
                     autoComplete="off"
                 />
+                {/* Clear button */}
+                {query && (
+                    <button
+                        onClick={handleClearSearch}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground hover:text-foreground transition-colors z-10"
+                    >
+                        <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
+                    </button>
+                )}
             </div>
 
             {/* Suggestions Dropdown */}
@@ -215,11 +243,10 @@ export function SearchBar() {
                         {results.map((result, index) => (
                             <button
                                 key={`${result.type}-${index}`}
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors ${
-                                    index === selectedIndex
-                                        ? "bg-primary/10"
-                                        : "hover:bg-muted/50"
-                                }`}
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors ${index === selectedIndex
+                                    ? "bg-primary/10"
+                                    : "hover:bg-muted/50"
+                                    }`}
                                 onClick={() => handleSelectResult(result)}
                                 onMouseEnter={() => setSelectedIndex(index)}
                             >

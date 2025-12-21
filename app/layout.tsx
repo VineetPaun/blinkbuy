@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
+import { SearchProvider } from "@/lib/search-context";
+import { AIChatProvider } from "@/lib/ai-chat-context";
 import { Header } from "@/components/layout/header";
+import { AIChat } from "@/components/ai/ai-chat";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -32,8 +35,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <CartProvider>
-          <Header />
-          <main>{children}</main>
+          <AIChatProvider>
+            <SearchProvider>
+              <Header />
+              <main>{children}</main>
+              <AIChat />
+            </SearchProvider>
+          </AIChatProvider>
         </CartProvider>
       </body>
     </html>

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-context";
-import { Button } from "@/components/ui/button";
 import { QuantitySelector } from "@/components/cart/quantity-selector";
 import { StarIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -28,36 +27,26 @@ export function ProductCard({ product }: ProductCardProps) {
         : null;
 
     return (
-        <div className="group relative bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200">
+        <div className="group relative bg-white dark:bg-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
             {/* Image Container */}
-            <div className="relative aspect-square bg-muted overflow-hidden">
-                {/* Badge - top right */}
-                {product.badge && (
-                    <div className="absolute top-2 right-2 z-10">
-                        <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">
-                            {product.badge}
-                        </span>
-                    </div>
-                )}
-
+            <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/20 dark:to-gray-800/20 overflow-hidden">
                 <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-contain group-hover:scale-105 transition-transform duration-300"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 />
 
-                {/* Circular ADD button - overlapping bottom right */}
-                <div className="absolute -bottom-4 right-3 z-10">
+                {/* ADD button - right side of image */}
+                <div className="absolute bottom-4 right-2 z-10">
                     {quantity === 0 ? (
-                        <Button
-                            size="sm"
+                        <button
                             onClick={() => addToCart(product)}
-                            className="h-10 px-5 rounded-full bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white font-bold shadow-lg"
+                            className="h-8 px-4 rounded-lg bg-[#c026d3] hover:bg-[#a21caf] text-white font-bold text-sm shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
                         >
                             ADD
-                        </Button>
+                        </button>
                     ) : (
                         <QuantitySelector
                             quantity={quantity}
@@ -70,39 +59,41 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {/* Content */}
-            <div className="p-3 pt-5">
+            <div className="p-3 pt-3">
                 {/* Price Section */}
-                <div className="flex items-baseline gap-2 mb-1">
+                <div className="flex items-baseline gap-2">
                     <span className="font-bold text-lg text-green-600">₹{product.price}</span>
                     {product.originalPrice && (
-                        <span className="text-sm text-muted-foreground line-through">
+                        <span className="text-sm text-gray-400 line-through">
                             ₹{product.originalPrice}
                         </span>
                     )}
                 </div>
 
-                {/* Savings */}
+                {/* Savings Badge */}
                 {savings && savings > 0 && (
-                    <p className="text-xs text-green-600 font-medium mb-2">
-                        ₹{savings} OFF
-                    </p>
+                    <div className="mt-1">
+                        <span className="inline-block text-[11px] font-bold text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded">
+                            ₹{savings} OFF
+                        </span>
+                    </div>
                 )}
 
                 {/* Product Name */}
-                <h3 className="font-medium text-sm text-foreground line-clamp-2 min-h-10 mb-1">
+                <h3 className="font-medium text-sm text-gray-800 dark:text-foreground line-clamp-2 mt-2 leading-tight">
                     {product.name}
                 </h3>
 
                 {/* Unit */}
-                <p className="text-xs text-muted-foreground mb-2">{product.unit}</p>
+                <p className="text-xs text-blue-500 mt-1">{product.unit}</p>
 
                 {/* Tags */}
                 {product.tags && product.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
-                        {product.tags.map((tag, index) => (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                        {product.tags.slice(0, 1).map((tag, index) => (
                             <span
                                 key={index}
-                                className="text-[10px] text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full"
+                                className="text-[11px] font-medium text-gray-600 dark:text-gray-400 bg-transparent px-2.5 py-0.5 rounded-full"
                             >
                                 {tag}
                             </span>
@@ -112,11 +103,17 @@ export function ProductCard({ product }: ProductCardProps) {
 
                 {/* Rating */}
                 {product.rating && (
-                    <div className="flex items-center gap-1">
-                        <HugeiconsIcon icon={StarIcon} className="size-3.5 text-yellow-500 fill-yellow-500" />
-                        <span className="text-xs font-medium text-foreground">{product.rating}</span>
+                    <div className="flex items-center gap-1 mt-2">
+                        <HugeiconsIcon
+                            icon={StarIcon}
+                            className="size-3.5 text-amber-400"
+                            style={{ fill: '#fbbf24' }}
+                        />
+                        <span className="text-xs font-medium text-gray-700 dark:text-foreground">
+                            {product.rating}
+                        </span>
                         {product.reviews && (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-gray-500 dark:text-muted-foreground">
                                 {formatReviews(product.reviews)}
                             </span>
                         )}
