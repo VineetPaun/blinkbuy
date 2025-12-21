@@ -179,8 +179,10 @@ export default function HomePage() {
               return (
                 <ProductGrid
                   key={category.id}
-                  products={categoryProducts.slice(0, 6)}
+                  products={categoryProducts}
                   title={category.name}
+                  variant="scroll"
+                  onSeeAll={() => setSelectedCategory(category.id)}
                 />
               );
             })}

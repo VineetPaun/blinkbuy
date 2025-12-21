@@ -6,6 +6,7 @@ import { SearchProvider } from "@/lib/search-context";
 import { AIChatProvider } from "@/lib/ai-chat-context";
 import { Header } from "@/components/layout/header";
 import { AIChat } from "@/components/ai/ai-chat";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -30,19 +31,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CartProvider>
-          <AIChatProvider>
-            <SearchProvider>
-              <Header />
-              <main>{children}</main>
-              <AIChat />
-            </SearchProvider>
-          </AIChatProvider>
-        </CartProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <CartProvider>
+            <AIChatProvider>
+              <SearchProvider>
+                <Header />
+                <main>{children}</main>
+                <AIChat />
+              </SearchProvider>
+            </AIChatProvider>
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

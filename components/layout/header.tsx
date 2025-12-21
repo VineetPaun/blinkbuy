@@ -5,6 +5,7 @@ import { useCart } from "@/lib/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { SearchBar } from "@/components/layout/search-bar";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
 import {
     ShoppingCart01Icon,
     Location01Icon,
@@ -25,31 +26,23 @@ export function Header() {
                     <div className="flex items-center gap-4 h-16">
                         {/* Logo */}
                         <div className="flex items-center gap-1">
-                            <span className="text-2xl font-black text-primary">blink</span>
-                            <span className="text-2xl font-black text-foreground">buy</span>
+                            <span className="text-4xl font-black text-primary">blink</span>
+                            <span className="text-4xl font-black text-foreground">buy</span>
                         </div>
 
-                        {/* Delivery Time & Location */}
-                        <button className="hidden md:flex flex-col items-start ml-4">
+                        {/* Delivery Time */}
+                        <div className="hidden md:flex items-center justify-center ml-4">
                             <div className="flex items-center gap-1 text-primary">
-                                <HugeiconsIcon icon={FlashIcon} className="size-4" />
-                                <span className="text-sm font-bold">10 minutes</span>
+                                <HugeiconsIcon icon={FlashIcon} className="size-8" />
+                                <span className="text-2xl font-black">10 MINS</span>
                             </div>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <HugeiconsIcon icon={Location01Icon} className="size-3" />
-                                <span className="max-w-37.5 truncate">Select delivery location</span>
-                                <HugeiconsIcon icon={ArrowDown01Icon} className="size-3" />
-                            </div>
-                        </button>
+                        </div>
 
                         {/* Search Bar */}
                         <SearchBar />
 
-                        {/* Login Button */}
-                        <Button variant="ghost" className="hidden md:flex gap-2">
-                            <HugeiconsIcon icon={UserIcon} className="size-5" />
-                            Login
-                        </Button>
+                        {/* Mode Toggle */}
+                        <ModeToggle />
 
                         {/* Cart Button */}
                         <Button
@@ -74,21 +67,15 @@ export function Header() {
                         </Button>
                     </div>
                 </div>
-
-                {/* Mobile Location Bar */}
-                <div className="md:hidden border-t border-border px-4 py-2">
-                    <button className="flex items-center gap-2 text-sm">
-                        <HugeiconsIcon icon={FlashIcon} className="size-4 text-primary" />
-                        <span className="font-bold text-primary">10 minutes</span>
-                        <span className="text-muted-foreground">•</span>
-                        <HugeiconsIcon icon={Location01Icon} className="size-4 text-muted-foreground" />
-                        <span className="text-muted-foreground truncate max-w-50">
-                            Select delivery location
-                        </span>
-                        <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 text-muted-foreground" />
-                    </button>
-                </div>
             </header>
+
+            {/* Mobile Location Bar */}
+            <div className="md:hidden border-b border-border px-4 py-2 flex justify-center bg-primary/5">
+                <div className="flex items-center gap-2 text-primary">
+                    <HugeiconsIcon icon={FlashIcon} className="size-5" />
+                    <span className="font-black text-lg">10 MINS DELIVERY</span>
+                </div>
+            </div>
 
             {/* Cart Drawer */}
             <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
