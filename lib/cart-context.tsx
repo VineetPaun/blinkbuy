@@ -18,22 +18,21 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = "blinkbuy-cart";
 
-export function CartProvider({ children }: { children: ReactNode }) {
-    const [items, setItems] = useState<CartItem[]>([]);
-    const [isHydrated, setIsHydrated] = useState(false);
-
-    // Load cart from localStorage on mount
-    useEffect(() => {
+// Helper to safely read from localStorage
+function getStoredCart(): CartItem[] {
+    if (typeof window === "undefined") return [];
+    try {
         const stored = localStorage.getItem(CART_STORAGE_KEY);
-        if (stored) {
-            try {
-                setItems(JSON.parse(stored));
-            } catch {
-                localStorage.removeItem(CART_STORAGE_KEY);
-            }
-        }
-        setIsHydrated(true);
-    }, []);
+        return stored ? JSON.parse(stored) : [];
+    } catch {
+        return [];
+    }
+}
+
+export function CartProvider({ children }: { children: ReactNode }) {
+    // Use lazy initialization to load from localStorage
+    const [items, setItems] = useState<CartItem[]>(getStoredCart);
+    const isHydrated = typeof window !== "undefined";
 
     // Save cart to localStorage whenever it changes
     useEffect(() => {

@@ -8,9 +8,6 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import {
     ShoppingCart01Icon,
-    Location01Icon,
-    UserIcon,
-    ArrowDown01Icon,
     FlashIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";

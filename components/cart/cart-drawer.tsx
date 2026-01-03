@@ -6,7 +6,9 @@ import { CartSummary } from "./cart-summary";
 import { Button } from "@/components/ui/button";
 import { Cancel01Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => { };
 
 interface CartDrawerProps {
     isOpen: boolean;
@@ -15,11 +17,12 @@ interface CartDrawerProps {
 
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     const { items, totalItems } = useCart();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    // Use useSyncExternalStore to track mounting state without triggering re-renders
+    const mounted = useSyncExternalStore(
+        emptySubscribe,
+        () => true,
+        () => false
+    );
 
     // Prevent body scroll when drawer is open
     useEffect(() => {

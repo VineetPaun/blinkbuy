@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { products, categories } from "@/data/products";
@@ -71,38 +71,41 @@ function searchCategories(query: string): Category[] {
 }
 
 export function SearchBar() {
-    const { performSearch, selectCategory, clearSearch, isSearching, searchQuery } = useSearch();
-    const [query, setQuery] = useState("");
+    const { performSearch, selectCategory, clearSearch, isSearching } = useSearch();
+    const [internalQuery, setInternalQuery] = useState("");
     const [isFocused, setIsFocused] = useState(false);
-    const [results, setResults] = useState<SearchResult[]>([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [recentSearches, setRecentSearches] = useState<string[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Sync query with global search state
-    useEffect(() => {
-        if (!isSearching) {
-            setQuery("");
-        }
-    }, [isSearching]);
+    // Track selected index - will reset based on query matching
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
-    // Load recent searches on mount
-    useEffect(() => {
-        setRecentSearches(getRecentSearches());
+    // Derive query from isSearching state - clear when not searching
+    const query = isSearching ? internalQuery : "";
+    const setQuery = useCallback((value: string) => {
+        setInternalQuery(value);
+        // Reset selection when query changes
+        setSelectedIndex(-1);
     }, []);
 
-    // Handle search
-    useEffect(() => {
+    // Subscribe to localStorage for recent searches using useSyncExternalStore
+    const recentSearches = useSyncExternalStore(
+        (callback) => {
+            window.addEventListener("storage", callback);
+            return () => window.removeEventListener("storage", callback);
+        },
+        () => getRecentSearches(),
+        () => []
+    );
+
+    // Derive results from query and recentSearches using useMemo
+    const results = useMemo<SearchResult[]>(() => {
         if (!query.trim()) {
             // Show recent searches when query is empty
-            const recent: SearchResult[] = recentSearches.slice(0, 5).map((s) => ({
+            return recentSearches.slice(0, 5).map((s) => ({
                 type: "recent",
                 item: s,
             }));
-            setResults(recent);
-            setSelectedIndex(-1);
-            return;
         }
 
         // Search products and categories
@@ -119,8 +122,7 @@ export function SearchBar() {
             item: c,
         }));
 
-        setResults([...categoryResults, ...productResults]);
-        setSelectedIndex(-1);
+        return [...categoryResults, ...productResults];
     }, [query, recentSearches]);
 
     // Handle click outside
@@ -133,6 +135,37 @@ export function SearchBar() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    const handleSelectResult = useCallback((result: SearchResult) => {
+        if (result.type === "product") {
+            const product = result.item as Product;
+            setQuery(product.name);
+            saveRecentSearch(product.name);
+            performSearch(product.name);
+        } else if (result.type === "category") {
+            const category = result.item as Category;
+            setQuery(category.name);
+            saveRecentSearch(category.name);
+            selectCategory(category);
+        } else if (result.type === "recent") {
+            const searchTerm = result.item as string;
+            setQuery(searchTerm);
+            performSearch(searchTerm);
+        }
+        setIsFocused(false);
+        // Trigger storage event to update recent searches
+        window.dispatchEvent(new Event("storage"));
+    }, [performSearch, selectCategory, setQuery]);
+
+    const handleSearch = useCallback((searchTerm: string) => {
+        if (searchTerm.trim()) {
+            saveRecentSearch(searchTerm);
+            performSearch(searchTerm);
+            // Trigger storage event to update recent searches
+            window.dispatchEvent(new Event("storage"));
+        }
+        setIsFocused(false);
+    }, [performSearch]);
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
@@ -161,37 +194,8 @@ export function SearchBar() {
                     break;
             }
         },
-        [isFocused, results, selectedIndex, query]
+        [isFocused, results, selectedIndex, query, handleSelectResult, handleSearch, setSelectedIndex]
     );
-
-    const handleSelectResult = (result: SearchResult) => {
-        if (result.type === "product") {
-            const product = result.item as Product;
-            setQuery(product.name);
-            saveRecentSearch(product.name);
-            performSearch(product.name);
-        } else if (result.type === "category") {
-            const category = result.item as Category;
-            setQuery(category.name);
-            saveRecentSearch(category.name);
-            selectCategory(category);
-        } else if (result.type === "recent") {
-            const searchTerm = result.item as string;
-            setQuery(searchTerm);
-            performSearch(searchTerm);
-        }
-        setIsFocused(false);
-        setRecentSearches(getRecentSearches());
-    };
-
-    const handleSearch = (searchQuery: string) => {
-        if (searchQuery.trim()) {
-            saveRecentSearch(searchQuery);
-            setRecentSearches(getRecentSearches());
-            performSearch(searchQuery);
-        }
-        setIsFocused(false);
-    };
 
     const handleClearSearch = () => {
         setQuery("");

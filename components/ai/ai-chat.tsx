@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useAIChat, ChatMessage } from "@/lib/ai-chat-context";
 import { useCart } from "@/lib/cart-context";
@@ -142,15 +142,12 @@ export function AIChat() {
     const { messages, isOpen, isTyping, toggleChat, closeChat, sendMessage, clearChat } = useAIChat();
     const { addToCart, items } = useCart();
     const [input, setInput] = useState("");
-    const [addedProductIds, setAddedProductIds] = useState<Set<string>>(new Set());
+    // Derive addedProductIds from cart items using useMemo instead of useEffect+setState
+    const addedProductIds = useMemo(() => {
+        return new Set(items.map(item => item.product.id));
+    }, [items]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-
-    // Sync addedProductIds with cart items
-    useEffect(() => {
-        const cartProductIds = new Set(items.map(item => item.product.id));
-        setAddedProductIds(cartProductIds);
-    }, [items]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

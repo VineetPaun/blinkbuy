@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { Product, Category } from "@/lib/types";
-import { products, categories } from "@/data/products";
+import { products } from "@/data/products";
 
 interface SearchContextType {
     searchQuery: string;
