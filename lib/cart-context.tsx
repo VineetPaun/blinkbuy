@@ -30,11 +30,18 @@ function getStoredCart(): CartItem[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    // Use lazy initialization to load from localStorage
-    const [items, setItems] = useState<CartItem[]>(getStoredCart);
-    const isHydrated = typeof window !== "undefined";
+    // Initialize with empty array to avoid hydration mismatch
+    const [items, setItems] = useState<CartItem[]>([]);
+    const [isHydrated, setIsHydrated] = useState(false);
 
-    // Save cart to localStorage whenever it changes
+    // Load cart from localStorage after hydration
+    useEffect(() => {
+        const storedCart = getStoredCart();
+        setItems(storedCart);
+        setIsHydrated(true);
+    }, []);
+
+    // Save cart to localStorage whenever it changes (only after hydration)
     useEffect(() => {
         if (isHydrated) {
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));

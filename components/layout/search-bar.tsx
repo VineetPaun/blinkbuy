@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { products, categories } from "@/data/products";
@@ -88,15 +88,20 @@ export function SearchBar() {
         setSelectedIndex(-1);
     }, []);
 
-    // Subscribe to localStorage for recent searches using useSyncExternalStore
-    const recentSearches = useSyncExternalStore(
-        (callback) => {
-            window.addEventListener("storage", callback);
-            return () => window.removeEventListener("storage", callback);
-        },
-        () => getRecentSearches(),
-        () => []
-    );
+    // State for recent searches - initialized empty to avoid hydration mismatch
+    const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+    // Load recent searches on client-side only
+    useEffect(() => {
+        setRecentSearches(getRecentSearches());
+
+        const handleStorage = () => {
+            setRecentSearches(getRecentSearches());
+        };
+
+        window.addEventListener("storage", handleStorage);
+        return () => window.removeEventListener("storage", handleStorage);
+    }, []);
 
     // Derive results from query and recentSearches using useMemo
     const results = useMemo<SearchResult[]>(() => {
