@@ -96,7 +96,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
 
                 {/* Footer with Summary */}
-                {items.length > 0 && <CartSummary />}
+                {items.length > 0 && <CartSummary onCheckout={onClose} />}
             </div>
         </>
     );

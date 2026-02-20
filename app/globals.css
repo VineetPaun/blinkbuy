@@ -135,3 +135,67 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
+
+@keyframes payment-ring-wave {
+    0% {
+        transform: scale(0.56);
+        opacity: 0.55;
+    }
+    70% {
+        opacity: 0.2;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes payment-check-pop {
+    0% {
+        transform: scale(0.45) rotate(-24deg);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.08) rotate(3deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes payment-text-rise {
+    0% {
+        transform: translateY(14px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.payment-ring {
+    animation: payment-ring-wave 2.4s ease-out infinite;
+}
+
+.payment-ring-1 {
+    animation-delay: 0s;
+}
+
+.payment-ring-2 {
+    animation-delay: 0.35s;
+}
+
+.payment-ring-3 {
+    animation-delay: 0.7s;
+}
+
+.payment-check-pop {
+    animation: payment-check-pop 0.7s cubic-bezier(0.26, 1.15, 0.47, 1);
+}
+
+.payment-text-rise {
+    animation: payment-text-rise 0.55s ease forwards;
+}
