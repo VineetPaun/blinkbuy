@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { aiTools } from "@/lib/ai-tools";
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const SYSTEM_PROMPT = `You are BlinkBuy AI, a helpful shopping assistant for a quick commerce grocery app. You help users:
 - Add and remove products from their cart
@@ -23,9 +23,9 @@ Always confirm what actions you've taken. If a tool returns products, mention th
 
 export async function POST(request: NextRequest) {
     try {
-        if (!OPENROUTER_API_KEY) {
+        if (!GROQ_API_KEY) {
             return NextResponse.json(
-                { error: "OpenRouter API key not configured" },
+                { error: "Groq API key not configured" },
                 { status: 500 }
             );
         }
@@ -41,17 +41,14 @@ ${cartContext || "Cart is empty."}
 
 Available product categories: Dairy, Fruits, Vegetables, Bakery, Snacks, Beverages, Meat, Breakfast, Personal Care, Cleaning, Pantry, Frozen`;
 
-        const response = await fetch(OPENROUTER_URL, {
+        const response = await fetch(GROQ_URL, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+                Authorization: `Bearer ${GROQ_API_KEY}`,
                 "Content-Type": "application/json",
-                "HTTP-Referer":
-                    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-                "X-Title": "BlinkBuy AI Shopping Assistant",
             },
             body: JSON.stringify({
-                model: "openai/gpt-4o-mini",
+                model: "openai/gpt-oss-120b",
                 messages: [
                     { role: "system", content: systemWithContext },
                     ...messages,
@@ -65,7 +62,7 @@ Available product categories: Dairy, Fruits, Vegetables, Bakery, Snacks, Beverag
 
         if (!response.ok) {
             const error = await response.text();
-            console.error("OpenRouter error:", error);
+            console.error("Groq error:", error);
             return NextResponse.json(
                 { error: "Failed to get AI response" },
                 { status: response.status }

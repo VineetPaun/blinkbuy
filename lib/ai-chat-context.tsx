@@ -19,7 +19,7 @@ export interface ChatMessage {
     isRecipeSuggestion?: boolean;
 }
 
-interface OpenRouterMessage {
+interface AIProviderMessage {
     role: "user" | "assistant" | "system" | "tool";
     content: string | null;
     tool_calls?: Array<{
@@ -59,8 +59,8 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
     const [isTyping, setIsTyping] = useState(false);
     const { addToCart, removeFromCart, items, clearCart } = useCart();
 
-    // Keep track of conversation history for OpenRouter
-    const conversationHistory = useRef<OpenRouterMessage[]>([]);
+    // Keep track of conversation history for the AI provider
+    const conversationHistory = useRef<AIProviderMessage[]>([]);
 
     // Execute tool calls and return results
     const executeToolCall = useCallback((
@@ -157,8 +157,8 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
         }
     }, [addToCart, removeFromCart, items, clearCart]);
 
-    // Call OpenRouter API
-    const callOpenRouter = useCallback(async (
+    // Call AI API route
+    const callAIProvider = useCallback(async (
         userMessage: string
     ): Promise<ChatMessage> => {
         const messageId = `msg-${Date.now()}`;
@@ -296,7 +296,7 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
             return {
                 id: messageId,
                 role: "assistant",
-                content: "Sorry, I encountered an error. Please try again. Make sure the OpenRouter API key is configured."
+                content: "Sorry, I encountered an error. Please try again. Make sure GROQ_API_KEY is configured."
             };
         }
     }, [executeToolCall, items]);
@@ -314,7 +314,7 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
         setIsTyping(true);
 
         try {
-            const response = await callOpenRouter(message);
+            const response = await callAIProvider(message);
             setMessages(prev => [...prev, response]);
         } catch (error) {
             console.error("Send message error:", error);
@@ -326,7 +326,7 @@ export function AIChatProvider({ children }: { children: ReactNode }) {
         } finally {
             setIsTyping(false);
         }
-    }, [callOpenRouter]);
+    }, [callAIProvider]);
 
     const addSuggestedToCart = useCallback((productsToAdd: Product[]) => {
         productsToAdd.forEach(p => addToCart(p));

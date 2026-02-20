@@ -68,7 +68,7 @@ A modern, AI-powered grocery and shopping e-commerce application built with Next
     Create a `.env.local` file in the root directory:
 
     ```env
-    OPENROUTER_API_KEY=your_openrouter_api_key_here
+    GROQ_API_KEY=your_groq_api_key_here
     ```
 
 4. **Run the development server**
@@ -122,7 +122,7 @@ blinkbuy/
 | **Components** | [Base UI](https://base-ui.com/)                           |
 | **Icons**      | [Hugeicons](https://hugeicons.com/)                       |
 | **Theme**      | [next-themes](https://github.com/pacocoursey/next-themes) |
-| **AI**         | [OpenRouter API](https://openrouter.ai/)                  |
+| **AI**         | [Groq API](https://console.groq.com/docs/quickstart)      |
 
 ## 📜 Available Scripts
 
@@ -152,7 +152,7 @@ This project is open source and available under the [MIT License](LICENSE).
 -   [Next.js](https://nextjs.org/) for the amazing React framework
 -   [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
 -   [Hugeicons](https://hugeicons.com/) for beautiful icons
--   [OpenRouter](https://openrouter.ai/) for AI capabilities
+-   [Groq](https://groq.com/) for AI capabilities
 
 ---
 

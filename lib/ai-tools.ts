@@ -1,7 +1,7 @@
 import { Product, CartItem } from "@/lib/types";
 import { products } from "@/data/products";
 
-// Tool definitions for OpenRouter function calling
+// Tool definitions for OpenAI-compatible function calling
 export const aiTools = [
     {
         type: "function" as const,
