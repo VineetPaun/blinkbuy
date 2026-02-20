@@ -167,17 +167,11 @@ export function AIChat() {
 
     const handleAddProduct = (product: Product) => {
         addToCart(product);
-        setAddedProductIds(prev => new Set(prev).add(product.id));
     };
 
     const handleAddAll = (productsToAdd: Product[]) => {
         productsToAdd.forEach(p => {
             addToCart(p);
-        });
-        setAddedProductIds(prev => {
-            const next = new Set(prev);
-            productsToAdd.forEach(p => next.add(p.id));
-            return next;
         });
     };
 
