@@ -93,14 +93,20 @@ export function SearchBar() {
 
     // Load recent searches on client-side only
     useEffect(() => {
-        setRecentSearches(getRecentSearches());
+        // Defer initial state hydration to avoid synchronous state updates inside the effect body.
+        const initialHydration = window.setTimeout(() => {
+            setRecentSearches(getRecentSearches());
+        }, 0);
 
         const handleStorage = () => {
             setRecentSearches(getRecentSearches());
         };
 
         window.addEventListener("storage", handleStorage);
-        return () => window.removeEventListener("storage", handleStorage);
+        return () => {
+            window.clearTimeout(initialHydration);
+            window.removeEventListener("storage", handleStorage);
+        };
     }, []);
 
     // Derive results from query and recentSearches using useMemo

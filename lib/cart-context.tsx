@@ -36,9 +36,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Load cart from localStorage after hydration
     useEffect(() => {
-        const storedCart = getStoredCart();
-        setItems(storedCart);
-        setIsHydrated(true);
+        // Defer hydration to keep effect semantics compliant with React hook linting.
+        const hydrationTimer = window.setTimeout(() => {
+            const storedCart = getStoredCart();
+            setItems(storedCart);
+            setIsHydrated(true);
+        }, 0);
+
+        return () => window.clearTimeout(hydrationTimer);
     }, []);
 
     // Save cart to localStorage whenever it changes (only after hydration)

@@ -1,3 +1,4 @@
+// Shared application types used by UI state, auth APIs, and server-side session logic.
 export interface Product {
     id: string;
     name: string;
@@ -25,4 +26,43 @@ export interface Category {
     icon: string;
     image?: string;
     tab?: string;
+}
+
+export interface AuthUser {
+    id: string;
+    name: string;
+    email: string | null;
+    phoneE164: string | null;
+    phoneVerifiedAt: string | null;
+}
+
+export interface SessionPayload {
+    sub: string;
+    email: string | null;
+    phone: string | null;
+    iat: number;
+    exp: number;
+}
+
+export interface SignupInput {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+}
+
+export interface PasswordLoginInput {
+    email: string;
+    password: string;
+}
+
+export interface OtpRequestInput {
+    phone: string;
+    country?: string;
+}
+
+export interface OtpVerifyInput {
+    phone: string;
+    country?: string;
+    code: string;
 }
