@@ -5,7 +5,7 @@ import { CartItem } from "./cart-item";
 import { CartSummary } from "./cart-summary";
 import { Button } from "@/components/ui/button";
 import { Cancel01Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { SafeIcon } from "@/components/ui/safe-icon";
 import { useEffect, useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => { };
@@ -55,7 +55,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
                     <div className="flex items-center gap-2">
-                        <HugeiconsIcon icon={ShoppingCart01Icon} className="size-5 text-primary" />
+                        <SafeIcon icon={ShoppingCart01Icon} className="size-5 text-primary" />
                         <h2 className="text-lg font-semibold">Your Cart</h2>
                         {totalItems > 0 && (
                             <span className="bg-primary text-primary-foreground text-xs font-medium px-2 py-0.5 rounded-full">
@@ -64,7 +64,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         )}
                     </div>
                     <Button variant="ghost" size="icon-sm" onClick={onClose}>
-                        <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
+                        <SafeIcon icon={Cancel01Icon} className="size-5" />
                     </Button>
                 </div>
 
@@ -73,7 +73,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center p-6">
                             <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
-                                <HugeiconsIcon icon={ShoppingCart01Icon} className="size-12 text-muted-foreground" />
+                                <SafeIcon icon={ShoppingCart01Icon} className="size-12 text-muted-foreground" />
                             </div>
                             <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
                             <p className="text-sm text-muted-foreground mb-4">

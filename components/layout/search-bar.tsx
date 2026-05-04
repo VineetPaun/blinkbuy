@@ -7,7 +7,7 @@ import { products, categories } from "@/data/products";
 import { Product, Category } from "@/lib/types";
 import { useSearch } from "@/lib/search-context";
 import { Search01Icon, Clock04Icon, ArrowRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { SafeIcon } from "@/components/ui/safe-icon";
 
 interface SearchResult {
     type: "product" | "category" | "recent";
@@ -219,7 +219,7 @@ export function SearchBar() {
     return (
         <div ref={containerRef} className="relative flex-1 max-w-2xl mx-4">
             <div className="relative">
-                <HugeiconsIcon
+                <SafeIcon
                     icon={Search01Icon}
                     className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground z-10"
                 />
@@ -240,7 +240,7 @@ export function SearchBar() {
                         onClick={handleClearSearch}
                         className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground hover:text-foreground transition-colors z-10"
                     >
-                        <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
+                        <SafeIcon icon={Cancel01Icon} className="size-5" />
                     </button>
                 )}
             </div>
@@ -290,7 +290,7 @@ export function SearchBar() {
                             onClick={() => handleSearch(query)}
                         >
                             <span>Search for &quot;{query}&quot;</span>
-                            <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
+                            <SafeIcon icon={ArrowRight01Icon} className="size-4" />
                         </button>
                     )}
                 </div>
@@ -341,7 +341,7 @@ function CategorySuggestion({ category, query }: { category: Category; query: st
                 </p>
                 <p className="text-xs text-muted-foreground">Category</p>
             </div>
-            <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 text-muted-foreground" />
+            <SafeIcon icon={ArrowRight01Icon} className="size-4 text-muted-foreground" />
         </>
     );
 }
@@ -350,7 +350,7 @@ function RecentSuggestion({ search }: { search: string }) {
     return (
         <>
             <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                <HugeiconsIcon icon={Clock04Icon} className="size-5 text-muted-foreground" />
+                <SafeIcon icon={Clock04Icon} className="size-5 text-muted-foreground" />
             </div>
             <div className="flex-1 min-w-0">
                 <p className="text-sm text-foreground">{search}</p>

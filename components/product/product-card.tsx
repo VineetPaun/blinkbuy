@@ -5,7 +5,7 @@ import { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-context";
 import { QuantitySelector } from "@/components/cart/quantity-selector";
 import { StarIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { SafeIcon } from "@/components/ui/safe-icon";
 
 interface ProductCardProps {
     product: Product;
@@ -107,7 +107,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     {/* Rating */}
                     {product.rating && (
                         <div className="flex items-center gap-1">
-                            <HugeiconsIcon
+                            <SafeIcon
                                 icon={StarIcon}
                                 className="size-3.5 text-amber-400"
                                 style={{ fill: '#fbbf24' }}

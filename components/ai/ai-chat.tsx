@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 import { useAIChat, ChatMessage } from "@/lib/ai-chat-context";
 import { useCart } from "@/lib/cart-context";
 import { Product } from "@/lib/types";
@@ -15,7 +16,7 @@ import {
     Add01Icon,
     CheckmarkCircle02Icon,
 } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { SafeIcon } from "@/components/ui/safe-icon";
 
 function ProductCard({ product, onAdd, isAdded }: { product: Product; onAdd: () => void; isAdded: boolean }) {
     return (
@@ -42,7 +43,7 @@ function ProductCard({ product, onAdd, isAdded }: { product: Product; onAdd: () 
                     : "bg-primary text-primary-foreground hover:bg-primary/90"
                     }`}
             >
-                <HugeiconsIcon icon={isAdded ? CheckmarkCircle02Icon : Add01Icon} className="size-4" />
+                <SafeIcon icon={isAdded ? CheckmarkCircle02Icon : Add01Icon} className="size-4" />
             </button>
         </div>
     );
@@ -141,6 +142,7 @@ function MessageBubble({
 export function AIChat() {
     const { messages, isOpen, isTyping, toggleChat, closeChat, sendMessage, clearChat } = useAIChat();
     const { addToCart, items } = useCart();
+    const { isLoaded, isSignedIn } = useUser();
     const [input, setInput] = useState("");
     // Derive addedProductIds from cart items using useMemo instead of useEffect+setState
     const addedProductIds = useMemo(() => {
@@ -175,6 +177,10 @@ export function AIChat() {
         });
     };
 
+    if (!isLoaded || !isSignedIn) {
+        return null;
+    }
+
     return (
         <>
             {/* Floating Button */}
@@ -186,7 +192,7 @@ export function AIChat() {
                     }`}
                 aria-label={isOpen ? "Close AI Chat" : "Open AI Chat"}
             >
-                <HugeiconsIcon icon={isOpen ? Cancel01Icon : AiChat02Icon} className="size-6" />
+                <SafeIcon icon={isOpen ? Cancel01Icon : AiChat02Icon} className="size-6" />
             </button>
 
             {/* Chat Window */}
@@ -196,7 +202,7 @@ export function AIChat() {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
                         <div className="flex items-center gap-2">
                             <div className="size-8 rounded-full bg-primary flex items-center justify-center">
-                                <HugeiconsIcon icon={AiChat02Icon} className="size-4 text-primary-foreground" />
+                                <SafeIcon icon={AiChat02Icon} className="size-4 text-primary-foreground" />
                             </div>
                             <div>
                                 <h3 className="text-sm font-semibold">BlinkBuy AI</h3>
@@ -209,13 +215,13 @@ export function AIChat() {
                                 className="size-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
                                 title="Clear chat"
                             >
-                                <HugeiconsIcon icon={Delete02Icon} className="size-4 text-muted-foreground" />
+                                <SafeIcon icon={Delete02Icon} className="size-4 text-muted-foreground" />
                             </button>
                             <button
                                 onClick={closeChat}
                                 className="size-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
                             >
-                                <HugeiconsIcon icon={Cancel01Icon} className="size-4 text-muted-foreground" />
+                                <SafeIcon icon={Cancel01Icon} className="size-4 text-muted-foreground" />
                             </button>
                         </div>
                     </div>
@@ -263,7 +269,7 @@ export function AIChat() {
                                 className="flex-1"
                             />
                             <Button type="submit" size="icon" disabled={!input.trim()}>
-                                <HugeiconsIcon icon={SentIcon} className="size-4" />
+                                <SafeIcon icon={SentIcon} className="size-4" />
                             </Button>
                         </form>
                     </div>
