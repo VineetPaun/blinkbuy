@@ -1,53 +1,25 @@
 "use client";
 
 // Header renders cart/search controls plus authenticated user actions.
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { SearchBar } from "@/components/layout/search-bar";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import type { AuthUser } from "@/lib/types";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import {
   Login01Icon,
-  Logout03Icon,
   ShoppingCart01Icon,
   FlashIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
-interface HeaderProps {
-  initialUser: AuthUser | null;
-}
-
-export function Header({ initialUser }: HeaderProps) {
-  const router = useRouter();
+export function Header() {
   const { totalItems, totalPrice } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [authUser, setAuthUser] = useState<AuthUser | null>(initialUser);
-
-  useEffect(() => {
-    setAuthUser(initialUser);
-  }, [initialUser]);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-    } finally {
-      setAuthUser(null);
-      router.push("/auth/login");
-      router.refresh();
-      setIsLoggingOut(false);
-    }
-  };
-
-  const firstName = authUser?.name.split(" ")[0] ?? "User";
+  const { isSignedIn, isLoaded } = useUser();
 
   return (
     <>
@@ -93,27 +65,19 @@ export function Header({ initialUser }: HeaderProps) {
             <ModeToggle />
 
             {/* Auth Actions */}
-            {authUser ? (
-              <div className="hidden md:flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Hi, {firstName}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className="gap-2"
-                >
-                  <HugeiconsIcon icon={Logout03Icon} className="size-4" />
-                  {isLoggingOut ? "Signing Out..." : "Logout"}
-                </Button>
-              </div>
-            ) : (
-              <Button variant="outline" size="sm" className="gap-2" onClick={() => router.push("/auth/login")}
-              >
-                <HugeiconsIcon icon={Login01Icon} className="size-4" />
-                Login
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {isLoaded && isSignedIn && (
+                <UserButton />
+              )}
+              {isLoaded && !isSignedIn && (
+                <SignInButton mode="modal">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <HugeiconsIcon icon={Login01Icon} className="size-4" />
+                    Login
+                  </Button>
+                </SignInButton>
+              )}
+            </div>
 
             {/* Cart Button */}
             <Button

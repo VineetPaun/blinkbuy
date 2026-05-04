@@ -8,7 +8,7 @@ import { AIChatProvider } from "@/lib/ai-chat-context";
 import { Header } from "@/components/layout/header";
 import { AIChat } from "@/components/ai/ai-chat";
 import { ThemeProvider } from "@/components/theme-provider";
-import { getCurrentUserFromServerCookies } from "@/lib/auth/server";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -27,35 +27,36 @@ export const metadata: Metadata = {
   description: "Get groceries, daily essentials & more delivered in just 10 minutes. Shop now for the fastest delivery experience!",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const currentUser = await getCurrentUserFromServerCookies();
-
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+    <ClerkProvider>
+      <html lang="en" className={inter.variable} suppressHydrationWarning data-darkreader-ignore="true">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          data-darkreader-ignore="true"
         >
-          <CartProvider>
-            <AIChatProvider>
-              <SearchProvider>
-                <Header initialUser={currentUser} />
-                <main>{children}</main>
-                <AIChat />
-              </SearchProvider>
-            </AIChatProvider>
-          </CartProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <CartProvider>
+              <AIChatProvider>
+                <SearchProvider>
+                  <Header />
+                  <main>{children}</main>
+                  <AIChat />
+                </SearchProvider>
+              </AIChatProvider>
+            </CartProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
